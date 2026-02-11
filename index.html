@@ -905,17 +905,17 @@
         //             '4. Copy the URL and paste below'
         //         );
                 
-        //         if (url) {
-        //             WEB_APP_URL = url;
-        //             localStorage.setItem('webAppUrl', url);
-        //             loadData();
-        //         } else {
-        //             showMessage('Setup cancelled. Refresh page to try again.', 'error');
-        //         }
-        //     } else {
-        //         loadData();
-        //     }
-        // }
+                if (url) {
+                    WEB_APP_URL = 'https://98nareshinn.github.io/Shree-Shyam-Baba/';
+                     localStorage.setItem('webAppUrl', url);
+                     loadData();
+                 } else {
+                     showMessage('Setup cancelled. Refresh page to try again.', 'error');
+                 }
+             } else {
+                 loadData();
+             }
+         }
 
         // Load data from Google Sheet
         async function loadData() {
@@ -1153,3 +1153,4 @@
     </script>
 </body>
 </html>
+
