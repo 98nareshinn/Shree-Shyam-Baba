@@ -893,20 +893,20 @@
         });
 
         // // Check if setup is complete
-        // function checkSetup() {
-        //     if (!WEB_APP_URL) {
-        //         const url = prompt(
-        //             '🔧 SETUP REQUIRED\n\n' +
-        //             'Please enter your Google Apps Script Web App URL:\n\n' +
-        //             'Steps:\n' +
-        //             '1. Open your Google Sheet\n' +
-        //             '2. Extensions → Apps Script\n' +
-        //             '3. Deploy as Web App\n' +
-        //             '4. Copy the URL and paste below'
-        //         );
+         function checkSetup() {
+             if (!WEB_APP_URL) {
+                const url = prompt(
+                     '🔧 SETUP REQUIRED\n\n' +
+                    'Please enter your Google Apps Script Web App URL:\n\n' +
+                    'Steps:\n' +
+                    '1. Open your Google Sheet\n' +
+                    '2. Extensions → Apps Script\n' +
+                   '3. Deploy as Web App\n' +
+                     '4. Copy the URL and paste below'
+                );
                 
                 if (url) {
-                    WEB_APP_URL = 'https://98nareshinn.github.io/Shree-Shyam-Baba/';
+                    WEB_APP_URL = url;
                      localStorage.setItem('webAppUrl', url);
                      loadData();
                  } else {
@@ -1153,4 +1153,5 @@
     </script>
 </body>
 </html>
+
 
