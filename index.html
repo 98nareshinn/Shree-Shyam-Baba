@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Collection Summary – Shree Shyam Baba</title>
+    <title>Collection Summary – Shree Shyam Baba (with search)</title>
     <style>
         * {
             box-sizing: border-box;
@@ -75,6 +75,67 @@
             color: #fce39c;
             font-weight: 600;
         }
+
+        /* --- search bar addition --- */
+        .search-section {
+            background: #1b2c38;
+            padding: 18px 40px;
+            border-bottom: 2px solid #b59d5e;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+        .search-wrapper {
+            flex: 2;
+            min-width: 280px;
+            display: flex;
+            background: #11212b;
+            border-radius: 60px;
+            padding: 4px 8px 4px 24px;
+            border: 1px solid #f5c45160;
+            box-shadow: inset 0 2px 8px #03080c;
+        }
+        .search-wrapper i {
+            color: #f5c451;
+            font-size: 1.5rem;
+            margin-right: 12px;
+            align-self: center;
+        }
+        .search-wrapper input {
+            background: transparent;
+            border: none;
+            width: 100%;
+            padding: 16px 8px 16px 0;
+            font-size: 1.2rem;
+            color: #f0f3f5;
+            outline: none;
+            font-weight: 400;
+        }
+        .search-wrapper input::placeholder {
+            color: #8fa7b5;
+            font-weight: 300;
+            letter-spacing: 0.3px;
+        }
+        .search-hint {
+            color: #c5b68b;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #1f333f;
+            padding: 8px 22px;
+            border-radius: 40px;
+            border: 1px dashed #c1a04b;
+        }
+        .search-hint span {
+            background: #f5c45120;
+            padding: 4px 12px;
+            border-radius: 30px;
+            color: #fad974;
+            font-weight: 500;
+        }
+
         /* grid area — all names & amounts */
         .data-grid {
             display: grid;
@@ -103,6 +164,392 @@
         /* each row card */
         .record-card {
             background: white;
+            border-radius: 18px;
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08), 0 2px 2px rgba(0,20,10,0.1);
+            font-size: 1.06rem;
+            border-left: 6px solid #cfddee;
+            transition: all 0.1s ease;
+            font-weight: 500;
+            color: #1e2b36;
+        }
+        .record-card:hover {
+            border-left-color: #f5c451;
+            background: #fefefd;
+            transform: scale(1.01);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
+        .record-name {
+            word-break: break-word;
+            max-width: 210px;
+            font-weight: 500;
+            color: #153243;
+        }
+        .record-amt {
+            background: #ebf3fa;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-weight: 700;
+            color: #004466;
+            font-size: 1.1rem;
+            box-shadow: inset 0 1px 4px #bac9d6;
+            white-space: nowrap;
+            margin-left: 12px;
+            border: 1px solid #d8b14b50;
+        }
+        .zero-amt {
+            background: #f0e7d8;
+            color: #7f5f3b;
+            font-style: italic;
+            opacity: 0.85;
+        }
+        .footer-note {
+            background: #1e2f3b;
+            padding: 18px 36px;
+            color: #cbd5e1;
+            font-size: 1.1rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 400;
+            border-top: 2px solid #887754;
+        }
+        .footer-note .count {
+            background: #2a3d4b;
+            padding: 8px 22px;
+            border-radius: 40px;
+            color: #f7da88;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .footer-note .timestamp {
+            color: #adb9c4;
+        }
+        .footer-note .highlight {
+            color: #f5c451;
+            font-weight: 600;
+        }
+        /* subtle no-result */
+        .no-result {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            background: #dbe1e8;
+            border-radius: 80px;
+            font-size: 1.6rem;
+            color: #2b495b;
+            font-weight: 500;
+            border: 2px dashed #bfa25b;
+        }
+    </style>
+</head>
+<body>
+<div class="data-master-card">
+    <!-- header: "one picture all data" -->
+    <div class="picture-header">
+        <h1>📋 Shree Shyam Baba</h1>
+        <div class="total-badge">
+            <span>💰 TOTAL</span>
+            <div class="grand-amt" id="grandTotal">—</div>
+        </div>
+    </div>
+
+    <!--  SEARCH BOX ADDED HERE : search by name or amount  -->
+    <div class="search-section">
+        <div class="search-wrapper">
+            <i>🔍</i>
+            <input type="text" id="searchInput" placeholder="Search by name or amount ..." autocomplete="off">
+        </div>
+        <div class="search-hint">
+            <span>name</span> ⚡ <span>amount</span> ( ₹ )
+        </div>
+    </div>
+
+    <!-- dynamic grid: names with amounts in front -->
+    <div class="data-grid" id="dataGridContainer">
+        <!-- JS will inject cards here -->
+    </div>
+
+    <!-- bottom summary: count & visual note -->
+    <div class="footer-note">
+        <div class="count">
+            <span>👥</span> <span id="totalEntries">0</span> entries · filtered
+        </div>
+        <div class="timestamp">📅 Ek Shyam Baba k naam</div>
+        <div style="display: flex; gap: 20px; align-items: center;">
+            <span style="color:#f5c451;">⬅️ amount on right</span>
+            <span style="color:#a5b9cb;">|</span>
+            <span style="color:#cbd5e1;">name in front</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ---------- raw data exactly as given ----------
+        const rawData = [
+            ["Naresh Singh", 5100],
+            ["Prahlad Patel", 11000],
+            ["Ajay Raj Singh", 11000],
+            ["Sunil meghvansi", 11000],
+            ["Pratap Banna", 11000],
+            ["vijay Pandey", 5100],
+            ["Vijay goru bhai", 2100],
+            ["Naresh S/o devi Singh", 3100],
+            ["Govind Raj collection", 1100],
+            ["Akram", 1100],
+            ["Tarun ji Bhavya enterprises", 5100],
+            ["Sonu meghwal", 211],
+            ["Jitendra palot", 511],
+            ["Raju Patel", 2100],
+            ["Prakash Beniwal", 2100],
+            ["Yogesh Meghwansi", 501],
+            ["Ramesh megwansi", 2100],
+            ["GuptRam", 1100],
+            ["Chetan bhai", 501],
+            ["Dharmendra Singh kanuja", 501],
+            ["Narayan ji Shop", 500],
+            ["Nikhil Tiles", 1100],
+            ["Pradeep Singh", 1100],
+            ["Ganapat Bhai Tyre", 501],
+            ["Gopal ji Ratan palot", null],        // empty amount
+            ["Raju Bhai banner", 1100],            // (no empty, just fine)
+            ["Bhagwan singh S/O Gopal singh", 501],
+            ["Ajay Singh Pandey", 1100],
+            ["Mota bhai s/o Trilok singh", 501],
+            ["Dilbar S/O Jagdish singh", 501],
+            ["Sumair Shop", 51],
+            ["Hadu Singh Maharaj", 500],
+            ["Bhanwar Singh Dhosla", 500],
+            ["Vishnu Shop", 101],
+            ["Monu ji Shop", 551],
+            ["Mukesh ji Dekhedar", 500],
+            ["Suraj Palot", 501],
+            ["Dilesh singh", 50],
+            ["Kumawat ji Shop", 200],
+            ["Vijay sain", 500],
+            ["Tilak sa", 100],
+            ["Hira bhai Bajari", 500],
+            ["Mahendra bhai Shop", 101],
+            ["Hira bhai mistri", 151],
+            ["Salim bhai", 501],
+            ["Wine Shop thikrana", 501],
+            ["Library", 201],
+            ["ice-cream factory", 500],
+            ["babu Lal ji", 500],
+            ["sarpanch ji", 2100],
+            ["Dinesh bhai pump", 1100],
+            ["Bhiru bhai hotel", 500],
+            ["Galaxy cafe", 200],
+            ["Sukhdev palot", 2100],
+            ["Pratap Bhai Tankar", 100],
+            ["Manohar Bhai", 1100],
+            ["Ronak Medical", 501],
+            ["Kaku Batery", 101],
+            ["Yuvraj sain", 101],
+            ["Vinod patel", 501],
+            ["Bahadur bhai", 500],
+            ["Asha classes", 1001],
+            ["Bhadu bhai", 500],
+            ["Suresh singh", 1100],
+            ["Niyaz", 151],
+            ["Kishore singh", 111],
+            ["Hari singh", 50],
+            ["Yuvraj salon", 250],
+            ["Arjun rana", 1100],
+            ["ISon Chemical factory", 1100],
+            ["Kamal auto agency", 200],
+            ["Manohar pati taal", 501],
+            ["Dilip sen", 500],
+            ["Rahul garige", 200],
+            ["Beware motor garige", 200],
+            ["Vranda offset", 501],
+            ["Shiva bhai photography", 500],
+            ["champa bhai", 100],
+            ["Kapil bharti", 1100],
+            ["lucky bharti", 200],
+            ["Manohar sersiya", 100],
+            ["Parashuram", 250],
+            ["Sukhdev ji Car Bazaar", 1100],
+            ["Pintu Bhai Dhosla", 501],
+            ["CHETRAPAL Singh", 251],
+            ["Bhargav Tyre", 200],
+            ["Kanha Govana", 500],
+            ["Avinash Meghwansi", 2100],
+            ["Rakesh Suthar", 501],
+            ["Kishore kachava",2100],
+            ["Mukesh Singh", 1100],
+            ["Nirmala", 500],
+            ["Arjun bhai Ajmer Road", 200],
+            ["Sagar Nogia", 501],
+            ["Chetan Baiyalaa", 500],
+            ["Ratan ji AVVNL", 1000],
+            ["RAJENDRA SINGH SHREE CEMENT", 1100],
+            ["Chetan Dagdi", 500],
+            ["Praveen Bhai", 201],
+            ["Raju singh s/o Dhanna singh",1100 ],
+            ["Raju bhai s/o Kalu singh", 500],
+            ["Fatah Singh Govana",500],
+            ["Shalu bhai", 101],
+            ["Karan ji", 100],
+            ["Karan bhai", 100],
+            ["Praveen bhai", 100],
+            ["Pankaj bhai Krishna fast food", 501],
+            ["Ajay singh bhati sendra", 501],
+            ["Ramprashad", 501],
+            ["Deppu tarun ji", 50],
+            ["Guddu Narbadkheda", 501],
+            ["Mukesh bhai electrician", 1100],
+            ["Lalli devnagar", 1100]
+        ];
+
+        // ----- helpers -----
+        function formatAmount(value) {
+            if (value === null || value === undefined || value === "") return "—";
+            return `₹ ${Number(value).toLocaleString('en-IN')}`;
+        }
+
+        // compute total from an array (filtered data)
+        function computeTotal(dataArray) {
+            return dataArray.reduce((acc, row) => {
+                const amt = row[1];
+                if (amt && typeof amt === 'number' && !isNaN(amt)) return acc + amt;
+                return acc;
+            }, 0);
+        }
+
+        // filter data based on search term (matches name or amount string representation)
+        function filterData(data, term) {
+            if (!term.trim()) return data;  // empty term -> show all
+
+            const lowerTerm = term.toLowerCase().trim();
+
+            return data.filter(([name, amount]) => {
+                // name match
+                if (name.toLowerCase().includes(lowerTerm)) return true;
+
+                // amount match: convert amount to searchable string (including null)
+                let amountStr = '';
+                if (amount === null || amount === undefined) {
+                    amountStr = '—';  // the dash we display
+                } else {
+                    amountStr = amount.toString(); // e.g. "1100"
+                }
+                // also include formatted version with ₹ and commas? we check both raw and formatted?
+                // easier: also check formatted version with ₹ and possible commas? optional but good
+                if (amountStr.includes(lowerTerm)) return true;
+
+                // formatted version (like "₹ 1,100") – useful if someone types "1,100" or "1100"
+                const formatted = formatAmount(amount); // includes ₹ and commas
+                if (formatted.toLowerCase().includes(lowerTerm)) return true;
+
+                // if amount is number, also check without commas (already did amountStr), but numbers don't have commas
+                return false;
+            });
+        }
+
+        // render cards based on provided data array
+        function renderGrid(data) {
+            const grid = document.getElementById('dataGridContainer');
+            if (!grid) return;
+
+            if (data.length === 0) {
+                // show nice empty message
+                grid.innerHTML = `<div class="no-result">✨ no matching names or amounts ✨</div>`;
+                // update total/entries
+                document.getElementById('grandTotal').innerText = `₹ 0`;
+                document.getElementById('totalEntries').innerText = '0';
+                return;
+            }
+
+            let allCards = '';
+            data.forEach(([name, amount]) => {
+                const hasAmount = (amount !== null && amount !== undefined && !isNaN(amount));
+                const amtClass = hasAmount ? 'record-amt' : 'record-amt zero-amt';
+                const displayAmt = hasAmount ? formatAmount(amount) : '—';
+
+                allCards += `
+                    <div class="record-card">
+                        <span class="record-name">${name}</span>
+                        <span class="${amtClass}">${displayAmt}</span>
+                    </div>
+                `;
+            });
+
+            grid.innerHTML = allCards;
+
+            // update total and count
+            const total = computeTotal(data);
+            document.getElementById('grandTotal').innerText = `₹ ${total.toLocaleString('en-IN')}`;
+            document.getElementById('totalEntries').innerText = data.length;
+        }
+
+        // --- initial render (all data) ---
+        const allData = rawData; // keep reference
+        renderGrid(allData);
+
+        // --- attach search listener ---
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', function(e) {
+            const term = e.target.value;
+            const filtered = filterData(allData, term);
+            renderGrid(filtered);
+        });
+
+        // optional: handle extra blur or enter (no extra needed)
+    })();
+</script>
+
+<!-- responsive styles (kept from original) -->
+<style>
+    @media (max-width: 600px) {
+        .picture-header {
+            flex-direction: column;
+            align-items: start;
+            gap: 15px;
+            padding: 20px 20px;
+        }
+        .picture-header h1 {
+            font-size: 1.8rem;
+        }
+        .total-badge {
+            font-size: 1.5rem;
+            padding: 10px 20px;
+        }
+        .search-section {
+            padding: 15px 20px;
+        }
+        .search-wrapper input {
+            font-size: 1rem;
+            padding: 12px 0;
+        }
+        .search-hint {
+            font-size: 0.9rem;
+            padding: 5px 15px;
+        }
+        .record-card {
+            font-size: 0.95rem;
+            padding: 12px 12px;
+        }
+        .record-amt {
+            padding: 4px 12px;
+            font-size: 1rem;
+        }
+        .footer-note {
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-start;
+        }
+    }
+</style>
+</body>
+</html>            background: white;
             border-radius: 18px;
             padding: 14px 18px;
             display: flex;
@@ -407,6 +854,7 @@
 </style>
 </body>
 </html>
+
 
 
 
